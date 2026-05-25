@@ -9,6 +9,7 @@ export default function PoesiaPage() {
   const [style, setStyle] = useState("soneto");
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [critique, setCritique] = useState("");
 
   const handleGenerate = async () => {
     if (!theme) return alert("Por favor, digite um tema.");
@@ -23,6 +24,7 @@ export default function PoesiaPage() {
       const data = await res.json();
       if (data.result) {
         setResult(data.result);
+        setCritique(data.critique || "");
       } else {
         alert(data.error || "Erro ao gerar poema.");
       }
@@ -47,84 +49,102 @@ export default function PoesiaPage() {
           </h1>
         </div>
 
-        {/* Instructions */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-          <p className="text-gray-600 text-sm">
-            Escolha um tema e um estilo literário. A inteligência artificial escreverá um poema inédito baseado nas suas escolhas.
-          </p>
-        </div>
+        {!result ? (
+          <>
+            {/* Instructions */}
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <p className="text-gray-600 text-sm">
+                Escolha um tema e um estilo literário. A inteligência artificial escreverá um poema inédito baseado nas suas escolhas.
+              </p>
+            </div>
 
-        {/* Form */}
-        <form className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="nome" className="block text-sm font-bold text-[var(--color-puc-dark)]">
-              Seu Nome
-            </label>
-            <input 
-              type="text"
-              id="nome"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              placeholder="Ex: Carlos Oliveira"
-              className="w-full p-4 rounded-xl border border-gray-200 focus:border-[var(--color-puc-brown)] focus:ring-1 focus:ring-[var(--color-puc-brown)] outline-none text-gray-900 bg-white"
-            />
-          </div>
+            {/* Form */}
+            <form className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="nome" className="block text-sm font-bold text-[var(--color-puc-dark)]">
+                  Seu Nome
+                </label>
+                <input 
+                  type="text"
+                  id="nome"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                  placeholder="Ex: Carlos Oliveira"
+                  className="w-full p-4 rounded-xl border border-gray-200 focus:border-[var(--color-puc-brown)] focus:ring-1 focus:ring-[var(--color-puc-brown)] outline-none text-gray-900 bg-white"
+                />
+              </div>
 
-          <div className="space-y-2">
-            <label htmlFor="theme" className="block text-sm font-bold text-[var(--color-puc-dark)]">
-              Tema do Poema
-            </label>
-            <input 
-              type="text"
-              id="theme"
-              value={theme}
-              onChange={(e) => setTheme(e.target.value)}
-              placeholder="Ex: O pôr do sol na praia de Ipanema"
-              className="w-full p-4 rounded-xl border border-gray-200 focus:border-[var(--color-puc-brown)] focus:ring-1 focus:ring-[var(--color-puc-brown)] outline-none text-gray-900 bg-white"
-            />
-          </div>
+              <div className="space-y-2">
+                <label htmlFor="theme" className="block text-sm font-bold text-[var(--color-puc-dark)]">
+                  Tema do Poema
+                </label>
+                <input 
+                  type="text"
+                  id="theme"
+                  value={theme}
+                  onChange={(e) => setTheme(e.target.value)}
+                  placeholder="Ex: O pôr do sol na praia de Ipanema"
+                  className="w-full p-4 rounded-xl border border-gray-200 focus:border-[var(--color-puc-brown)] focus:ring-1 focus:ring-[var(--color-puc-brown)] outline-none text-gray-900 bg-white"
+                />
+              </div>
 
-          <div className="space-y-2">
-            <label htmlFor="style" className="block text-sm font-bold text-[var(--color-puc-dark)]">
-              Estilo Literário
-            </label>
-            <select 
-              id="style"
-              value={style}
-              onChange={(e) => setStyle(e.target.value)}
-              className="w-full p-4 rounded-xl border border-gray-200 focus:border-[var(--color-puc-brown)] focus:ring-1 focus:ring-[var(--color-puc-brown)] outline-none bg-white text-gray-900"
-            >
-              <option value="soneto">Soneto Clássico</option>
-              <option value="cordel">Literatura de Cordel</option>
-              <option value="haikai">Haikai Japonês</option>
-              <option value="rap">Rap / Hip Hop</option>
-              <option value="modernista">Modernista</option>
-            </select>
-          </div>
+              <div className="space-y-2">
+                <label htmlFor="style" className="block text-sm font-bold text-[var(--color-puc-dark)]">
+                  Estilo Literário
+                </label>
+                <select 
+                  id="style"
+                  value={style}
+                  onChange={(e) => setStyle(e.target.value)}
+                  className="w-full p-4 rounded-xl border border-gray-200 focus:border-[var(--color-puc-brown)] focus:ring-1 focus:ring-[var(--color-puc-brown)] outline-none bg-white text-gray-900"
+                >
+                  <option value="soneto">Soneto Clássico</option>
+                  <option value="cordel">Literatura de Cordel</option>
+                  <option value="haikai">Haikai Japonês</option>
+                  <option value="rap">Rap / Hip Hop</option>
+                  <option value="modernista">Modernista</option>
+                </select>
+              </div>
 
-          <button 
-            type="button"
-            onClick={handleGenerate}
-            disabled={isLoading}
-            className="w-full bg-[var(--color-puc-brown)] hover:bg-[#7a321d] text-white font-bold py-4 rounded-xl shadow-md transition-colors mt-4 flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Escrevendo...
-              </>
-            ) : "Escrever Poema 📝"}
-          </button>
-        </form>
-
-        {/* Result Area */}
-        {result && (
+              <button 
+                type="button"
+                onClick={handleGenerate}
+                disabled={isLoading}
+                className="w-full bg-[var(--color-puc-brown)] hover:bg-[#7a321d] text-white font-bold py-4 rounded-xl shadow-md transition-colors mt-4 flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Escrevendo...
+                  </>
+                ) : "Escrever Poema 📝"}
+              </button>
+            </form>
+          </>
+        ) : (
           <div className="mt-8 p-6 bg-white border border-gray-200 rounded-2xl shadow-sm">
             <h3 className="font-bold text-[var(--color-puc-dark)] mb-2">Seu Poema:</h3>
             <p className="text-gray-700 whitespace-pre-wrap italic mb-4">
               {result}
             </p>
+
+            {critique && (
+              <div className="bg-[var(--color-puc-brown)] bg-opacity-10 p-4 rounded-xl text-left border border-[var(--color-puc-brown)] mb-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xl">🧐</span>
+                  <span className="font-bold text-[var(--color-puc-dark)]">O Crítico Literário Diz:</span>
+                </div>
+                <p className="text-sm text-gray-800">{critique}</p>
+              </div>
+            )}
+
             <DownloadButton result={result} type="text" author={nome} />
+            <button 
+              onClick={() => setResult(null)} 
+              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-3 rounded-xl shadow-sm transition-colors mt-4"
+            >
+              Criar Novo Poema
+            </button>
           </div>
         )}
 
