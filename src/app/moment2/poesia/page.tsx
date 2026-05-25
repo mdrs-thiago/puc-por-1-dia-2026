@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import DownloadButton from "@/components/DownloadButton";
 
 export default function PoesiaPage() {
   const [nome, setNome] = useState("");
@@ -120,9 +121,10 @@ export default function PoesiaPage() {
         {result && (
           <div className="mt-8 p-6 bg-white border border-gray-200 rounded-2xl shadow-sm">
             <h3 className="font-bold text-[var(--color-puc-dark)] mb-2">Seu Poema:</h3>
-            <p className="text-gray-700 whitespace-pre-wrap italic">
+            <p className="text-gray-700 whitespace-pre-wrap italic mb-4">
               {result}
             </p>
+            <DownloadButton result={result} type="text" author={nome} />
           </div>
         )}
 

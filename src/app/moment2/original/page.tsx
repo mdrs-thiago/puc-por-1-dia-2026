@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import DownloadButton from "@/components/DownloadButton";
 
 export default function OriginalArtPage() {
   const [nome, setNome] = useState("");
@@ -123,7 +124,8 @@ export default function OriginalArtPage() {
           <div className="mt-8 p-4 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden text-center">
             <h3 className="font-bold text-[var(--color-puc-dark)] mb-2">Sua Obra:</h3>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={result} alt="Arte gerada" className="w-full rounded-lg shadow-sm" />
+            <img src={result} alt="Arte gerada" className="w-full rounded-lg shadow-sm" crossOrigin="anonymous" />
+            <DownloadButton result={result} type="image" author={nome} />
           </div>
         ) : (
           <div className="mt-8 p-4 border-2 border-dashed border-gray-300 rounded-2xl text-center text-gray-400">

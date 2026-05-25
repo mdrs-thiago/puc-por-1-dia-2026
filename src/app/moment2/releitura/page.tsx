@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import DownloadButton from "@/components/DownloadButton";
 
 const OBRAS = [
   { id: 1, name: "Monalisa (Da Vinci)", imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/500px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg" },
@@ -132,7 +133,8 @@ export default function ReleituraPage() {
           <div className="mt-8 p-4 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden text-center">
             <h3 className="font-bold text-[var(--color-puc-dark)] mb-2">Sua Releitura:</h3>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={result} alt="Releitura gerada" className="w-full rounded-lg shadow-sm" />
+            <img src={result} alt="Releitura gerada" className="w-full rounded-lg shadow-sm" crossOrigin="anonymous" />
+            <DownloadButton result={result} type="image" author={nome} />
           </div>
         )}
 

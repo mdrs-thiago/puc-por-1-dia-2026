@@ -1,15 +1,26 @@
 "use client";
 import { useEffect, useState } from "react";
 
-// Mock data to simulate gallery
-const MOCK_GALLERY = [
-  { id: 1, type: "image", prompt: "Cachorro astronauta na PUC", author: "João", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Edvard_Munch%2C_1893%2C_The_Scream%2C_oil%2C_tempera_and_pastel_on_cardboard%2C_91_x_73_cm%2C_National_Gallery_of_Norway.jpg/400px-Edvard_Munch%2C_1893%2C_The_Scream%2C_oil%2C_tempera_and_pastel_on_cardboard%2C_91_x_73_cm%2C_National_Gallery_of_Norway.jpg" },
-  { id: 2, type: "text", prompt: "Poema sobre o campus", author: "Maria", content: "No bosque verde do campus,\\nA brisa canta devagar,\\nAprender é um longo salto,\\nNum mar de ideias sem fim." },
-  { id: 3, type: "image", prompt: "Monalisa Cyberpunk", author: "Pedro", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/400px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg" },
-];
-
 export default function GalleryPage() {
-  const [items, setItems] = useState(MOCK_GALLERY);
+  const [items, setItems] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        const res = await fetch("/api/gallery");
+        const data = await res.json();
+        if (data.items) {
+          setItems(data.items);
+        }
+      } catch (e) {
+        console.error("Erro ao buscar galeria:", e);
+      }
+    };
+
+    fetchGallery();
+    const interval = setInterval(fetchGallery, 3000); // 3 segundos para parecer real-time
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <main className="min-h-screen bg-[var(--color-puc-light)] p-10">
