@@ -7,15 +7,22 @@ const OBRAS = [
   { id: 1, name: "Monalisa (Da Vinci)", imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/500px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg" },
   { id: 2, name: "A Noite Estrelada (Van Gogh)", imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/500px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg" },
   { id: 3, name: "O Grito (Munch)", imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Edvard_Munch%2C_1893%2C_The_Scream%2C_oil%2C_tempera_and_pastel_on_cardboard%2C_91_x_73_cm%2C_National_Gallery_of_Norway.jpg/500px-Edvard_Munch%2C_1893%2C_The_Scream%2C_oil%2C_tempera_and_pastel_on_cardboard%2C_91_x_73_cm%2C_National_Gallery_of_Norway.jpg" },
-  { id: 4, name: "A Criação de Adão (Michelangelo)", imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg/500px-Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg" }
+  { id: 4, name: "A Criação de Adão (Michelangelo)", imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg/500px-Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg" },
+  { id: 5, name: "Moça com Brinco de Pérola (Vermeer)", imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/1665_Girl_with_a_Pearl_Earring.jpg/500px-1665_Girl_with_a_Pearl_Earring.jpg" },
+  { id: 6, name: "A Persistência da Memória (Dalí)", imgUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/d/dd/The_Persistence_of_Memory.jpg/500px-The_Persistence_of_Memory.jpg" },
+  { id: 7, name: "O Nascimento de Vênus (Botticelli)", imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg/500px-Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg" },
+  { id: 8, name: "Os Girassóis (Van Gogh)", imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Vincent_Willem_van_Gogh_127.jpg/500px-Vincent_Willem_van_Gogh_127.jpg" },
+  { id: 9, name: "O Beijo (Klimt)", imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg/500px-The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg" },
+  { id: 10, name: "Abaporu (Tarsila do Amaral)", imgUrl: "https://upload.wikimedia.org/wikipedia/pt/thumb/8/8c/Abaporu.jpg/500px-Abaporu.jpg" }
 ];
 
 export default function ReleituraPage() {
   const [selectedObra, setSelectedObra] = useState<number | null>(null);
   const [nome, setNome] = useState("");
   const [prompt, setPrompt] = useState("");
+  const [futureStyle, setFutureStyle] = useState("Cyberpunk 2077");
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<{url1: string, url2: string} | null>(null);
+  const [result, setResult] = useState<{url1: string, url2: string, style: string} | null>(null);
   const [sliderPos, setSliderPos] = useState(50);
 
   const handleGenerate = async () => {
@@ -27,11 +34,11 @@ export default function ReleituraPage() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "time_tunnel", prompt, obraBase, autor: nome })
+        body: JSON.stringify({ type: "time_tunnel", prompt, obraBase, autor: nome, futureStyle })
       });
       const data = await res.json();
       if (data.url1 && data.url2) {
-        setResult({ url1: data.url1, url2: data.url2 });
+        setResult({ url1: data.url1, url2: data.url2, style: futureStyle });
         setSliderPos(50);
       } else {
         alert(data.error || "Erro ao gerar arte.");
@@ -103,6 +110,24 @@ export default function ReleituraPage() {
               </div>
 
               <div className="space-y-2">
+                <label htmlFor="futureStyle" className="block text-sm font-bold text-[var(--color-puc-dark)]">
+                  Qual Futuro você quer explorar?
+                </label>
+                <select 
+                  id="futureStyle"
+                  value={futureStyle}
+                  onChange={(e) => setFutureStyle(e.target.value)}
+                  className="w-full p-4 rounded-xl border border-gray-200 focus:border-[var(--color-puc-brown)] focus:ring-1 focus:ring-[var(--color-puc-brown)] outline-none text-gray-900 bg-white"
+                >
+                  <option value="Cyberpunk 2077">Cyberpunk (Neon, Distopia)</option>
+                  <option value="Solarpunk">Solarpunk (Natureza, Utopia Verde)</option>
+                  <option value="Steampunk">Steampunk (Engrenagens, Era Vitoriana)</option>
+                  <option value="Retrofuturismo">Retrofuturismo (Anos 50 no Espaço)</option>
+                  <option value="Pós-apocalíptico">Pós-apocalíptico (Mad Max, Deserto)</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
                 <label htmlFor="prompt" className="block text-sm font-bold text-[var(--color-puc-dark)]">
                   Como você quer transformar essa obra?
                 </label>
@@ -111,7 +136,7 @@ export default function ReleituraPage() {
                   rows={3}
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
-                  placeholder="Ex: Adicione óculos de sol nela e um fundo cyberpunk neon..."
+                  placeholder="Ex: Adicione óculos de sol nela..."
                   className="w-full p-4 rounded-xl border border-gray-200 focus:border-[var(--color-puc-brown)] focus:ring-1 focus:ring-[var(--color-puc-brown)] outline-none resize-none text-gray-900 bg-white disabled:bg-gray-100"
                   disabled={!selectedObra}
                 />
@@ -178,7 +203,7 @@ export default function ReleituraPage() {
             
             <div className="flex justify-between px-2 text-xs font-bold text-gray-500 uppercase tracking-wider mb-6">
               <span>Passado Fiel</span>
-              <span>Futuro Cyberpunk</span>
+              <span className="text-right">Futuro: {result.style}</span>
             </div>
 
             <DownloadButton result={result.url2} type="image" author={nome} />

@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     console.log(">> [API] Recebeu payload:", body);
     
-    const { type, prompt, style, obraBase, autor, sujeito, ambiente, clima } = body;
+    const { type, prompt, style, obraBase, autor, sujeito, ambiente, clima, futureStyle } = body;
 
     const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
     const USE_MOCK = process.env.USE_MOCK === "true";
@@ -156,10 +156,12 @@ export async function POST(req: Request) {
 
       if (!OPENAI_API_KEY) return NextResponse.json({ error: "Chave da OpenAI não configurada" }, { status: 500 });
 
-      const prompt1 = `Faça uma releitura EXATA da obra '${obraBase}', mas aplicando as seguintes modificações rigorosamente: ${prompt}. Mantenha o estilo clássico original.`;
-      const prompt2 = `Faça uma releitura da obra '${obraBase}' no estilo CYBERPUNK 2077, com luzes neon, tecnologia futurista. Aplique a seguinte ideia junto: ${prompt}.`;
+      const styleToUse = futureStyle || "CYBERPUNK 2077";
 
-      console.log(">> [API] Iniciando Time Tunnel...");
+      const prompt1 = `Faça uma releitura EXATA da obra '${obraBase}', mas aplicando as seguintes modificações rigorosamente: ${prompt}. Mantenha o estilo clássico original.`;
+      const prompt2 = `Faça uma releitura da obra '${obraBase}' no estilo ${styleToUse}, aplicando toda a estética desse estilo. Aplique a seguinte ideia junto: ${prompt}.`;
+
+      console.log(">> [API] Iniciando Time Tunnel com estilo:", styleToUse);
       const genImage = async (p: string) => {
         const response = await fetch("https://api.openai.com/v1/images/generations", {
           method: "POST",

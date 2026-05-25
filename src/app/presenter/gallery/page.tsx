@@ -22,6 +22,18 @@ export default function GalleryPage() {
     return () => clearInterval(interval);
   }, []);
 
+  const handleDelete = async (id: string) => {
+    if (!confirm("Remover esta obra do telão?")) return;
+    try {
+      const res = await fetch(`/api/gallery?id=${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setItems(items => items.filter(item => item.id !== id));
+      }
+    } catch (e) {
+      console.error("Erro ao deletar:", e);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[var(--color-puc-light)] p-10">
       <div className="max-w-7xl mx-auto">
@@ -35,15 +47,25 @@ export default function GalleryPage() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-10">
           {items.map((item) => (
-            <div key={item.id} className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 transform hover:-translate-y-2 transition-transform duration-300">
+            <div key={item.id} className="relative bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 transform hover:-translate-y-2 transition-transform duration-300">
+              
+              {/* Botão de Remover (Aparece ao passar o mouse ou fica fixo dependendo do uso) */}
+              <button 
+                onClick={() => handleDelete(item.id)}
+                className="absolute top-4 right-4 bg-red-500/90 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-red-600 hover:scale-110 transition-all z-10"
+                title="Remover Obra"
+              >
+                🗑️
+              </button>
+
               {item.type === "image" ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={item.url} alt={item.prompt} className="w-full h-64 object-cover" />
+                <img src={item.url} alt={item.prompt} className="w-full aspect-square object-cover" />
               ) : (
-                <div className="w-full h-64 p-6 bg-gray-50 flex items-center justify-center overflow-y-auto">
-                  <p className="text-lg italic text-gray-700 whitespace-pre-wrap text-center font-serif">
+                <div className="w-full aspect-square p-8 bg-gray-50 flex items-center justify-center overflow-y-auto">
+                  <p className="text-2xl italic text-gray-700 whitespace-pre-wrap text-center font-serif leading-relaxed">
                     &quot;{item.content}&quot;
                   </p>
                 </div>

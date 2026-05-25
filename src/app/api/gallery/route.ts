@@ -27,3 +27,32 @@ export async function GET() {
     return NextResponse.json({ items: [] });
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    if (!id) return NextResponse.json({ error: "ID não fornecido" }, { status: 400 });
+
+    const redis = new Redis(process.env.REDIS_URL || "");
+    // Pega a lista toda para encontrar a string JSON exata
+    const rawItems = await redis.lrange("gallery", 0, -1);
+    const itemToRemove = rawItems.find(item => {
+      try {
+        return JSON.parse(item).id === id;
+      } catch (e) {
+        return false;
+      }
+    });
+
+    if (itemToRemove) {
+      await redis.lrem("gallery", 1, itemToRemove);
+    }
+    
+    redis.quit();
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Gallery Delete Error:", error);
+    return NextResponse.json({ error: "Erro ao deletar" }, { status: 500 });
+  }
+}
