@@ -48,7 +48,7 @@ export async function POST(req: Request) {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${OPENAI_API_KEY}` },
         body: JSON.stringify({
-          model: "gpt-4-turbo",
+          model: "gpt-4o-mini",
           messages: [
             { role: "system", content: "Você é um poeta. Escreva um poema curto, de no máximo 2 estrofes." },
             { role: "user", content: `Escreva um poema no estilo ${style} sobre: ${prompt}` }
@@ -88,11 +88,11 @@ export async function POST(req: Request) {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${OPENAI_API_KEY}` },
         body: JSON.stringify({
-          model: "dall-e-3",
+          model: "gpt-image-1-mini",
           prompt: finalPrompt,
           n: 1,
           size: "1024x1024",
-          quality: "standard"
+          quality: "low"
         })
       });
       const data = await response.json();
