@@ -43,7 +43,8 @@ export default function GalleryPage() {
             <p className="text-2xl text-[var(--color-puc-brown)] mt-2">IA & Arte na PUC-Rio</p>
           </div>
           <div className="w-24 h-24 bg-[var(--color-puc-brown)] text-white rounded-full flex items-center justify-center text-3xl font-bold shadow-xl">
-            PUC
+            <img src="https://soulscience.com.br/wp-content/uploads/2023/10/logo-puc-rio1.png" alt="PUC" className="w-full h-24 object-contain" />
+
           </div>
         </header>
 
